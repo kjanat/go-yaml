@@ -8,6 +8,7 @@
 package libyaml
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"unicode"
@@ -307,12 +308,34 @@ func (n *Node) Decode(v any) (err error) {
 // See the documentation of the package-level Load function for details
 // about YAML to Go conversion and tag options.
 func (n *Node) Load(v any, opts ...Option) (err error) {
+	return n.LoadWithAliasContext(v, nil, opts...)
+}
+
+// LoadWithAliasContext decodes n with an unordered set of active alias occurrences.
+// Callers must supply original ancestors from the same unchanged source graph;
+// membership and ancestry are not checked. Invalid or repeated entries return
+// an unlocated error before v is written.
+//
+// Alias-cycle state and depth are inherited. Merge selections and map-type
+// defaults start fresh. Limit callbacks report per-load counts, including the
+// inherited alias depth; callers splitting a document must aggregate these counts.
+func (n *Node) LoadWithAliasContext(v any, active []*Node, opts ...Option) (err error) {
 	defer handleErr(&err)
 	o, err := ApplyOptions(opts...)
 	if err != nil {
 		return err
 	}
 	d := NewConstructor(o)
+	for i, alias := range active {
+		if alias == nil || alias.Kind != AliasNode || alias.Alias == nil {
+			return fmt.Errorf("yaml: invalid active alias at index %d", i)
+		}
+		if d.aliases[alias] {
+			return fmt.Errorf("yaml: duplicate active alias at index %d", i)
+		}
+		d.aliases[alias] = true
+	}
+	d.aliasDepth = len(active)
 	out := reflect.ValueOf(v)
 	if out.Kind() == reflect.Pointer && !out.IsNil() {
 		out = out.Elem()

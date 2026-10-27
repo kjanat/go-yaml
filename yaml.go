@@ -83,6 +83,11 @@ type Option = libyaml.Option
 
 // Option configuration functions
 var (
+	// WithOccurrenceFunc selects original source nodes for OccurrenceTarget
+	// values without traversing their payloads. Callback errors abort loading
+	// with the selected node's location and preserve errors.Is and errors.As.
+	WithOccurrenceFunc = libyaml.WithOccurrenceFunc
+
 	// WithIndent sets the number of spaces to use for indentation when
 	// dumping YAML content.
 	//

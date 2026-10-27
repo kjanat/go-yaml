@@ -20,6 +20,7 @@ type Options struct {
 	UniqueKeys     bool // Enforce unique keys in mappings
 	StreamNodes    bool // Enable stream node emission
 	AllDocuments   bool // Load/Dump all documents in multi-document streams
+	OccurrenceFunc func(OccurrenceTarget, Occurrence) error
 
 	// Dumping options
 	Indent                int        // Indentation spaces (2-9)
@@ -43,6 +44,20 @@ type Options struct {
 
 // Option allows configuring YAML loading and dumping operations.
 type Option func(*Options) error
+
+// WithOccurrenceFunc selects source occurrences for [OccurrenceTarget] values.
+// The callback runs synchronously during construction, before document, alias,
+// null, or payload processing. Its error aborts the load, preserving errors.Is
+// and errors.As and adding the selected node's location.
+//
+// The callback must not mutate the source graph or resume the active load.
+// Independent nested loads are permitted. Targets require a non-nil callback.
+func WithOccurrenceFunc(fn func(OccurrenceTarget, Occurrence) error) Option {
+	return func(o *Options) error {
+		o.OccurrenceFunc = fn
+		return nil
+	}
+}
 
 // DepthKind represents the type of nesting (flow or block).
 type DepthKind string

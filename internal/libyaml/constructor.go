@@ -54,6 +54,8 @@ type Constructor struct {
 	aliasCount     int
 	aliasDepth     int
 	aliasCheck     func(aliasCount, constructCount int) error
+	aliasPath      []*Node
+	occurrence     func(OccurrenceTarget, Occurrence) error
 
 	mergedFields map[any]bool
 }
@@ -68,6 +70,7 @@ func NewConstructor(opts *Options) *Constructor {
 		UniqueKeys:     opts.UniqueKeys,
 		aliases:        make(map[*Node]bool),
 		aliasCheck:     opts.AliasCheck,
+		occurrence:     opts.OccurrenceFunc,
 	}
 }
 
@@ -91,6 +94,21 @@ func (c *Constructor) Construct(n *Node, out reflect.Value) (good bool) {
 	if out.Type() == nodeType {
 		out.Set(reflect.ValueOf(n).Elem())
 		return true
+	}
+	if out.CanAddr() {
+		if target, ok := out.Addr().Interface().(OccurrenceTarget); ok {
+			if c.occurrence == nil {
+				Fail(formatConstructorError(
+					fmt.Errorf("occurrence target %s requires WithOccurrenceFunc", out.Type()),
+					Mark{Line: n.Line, Column: n.Column},
+				))
+			}
+			occurrence := Occurrence{Node: n, Crossed: append([]*Node(nil), c.aliasPath...)}
+			if err := c.occurrence(target, occurrence); err != nil {
+				Fail(formatConstructorError(err, Mark{Line: n.Line, Column: n.Column}))
+			}
+			return true
+		}
 	}
 
 	switch n.Kind {
@@ -459,7 +477,9 @@ func (c *Constructor) alias(n *Node, out reflect.Value) (good bool) {
 	}
 	c.aliases[n] = true
 	c.aliasDepth++
+	c.aliasPath = append(c.aliasPath, n)
 	good = c.Construct(n.Alias, out)
+	c.aliasPath = c.aliasPath[:len(c.aliasPath)-1]
 	c.aliasDepth--
 	delete(c.aliases, n)
 	return good

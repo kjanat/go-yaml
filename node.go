@@ -35,6 +35,14 @@ type (
 	//	err := yaml.Unmarshal(data, &person)
 	Node = libyaml.Node
 
+	// Occurrence identifies an original selected node and aliases crossed
+	// since the load's root, excluding LoadWithAliasContext ancestors.
+	Occurrence = libyaml.Occurrence
+
+	// OccurrenceTarget marks an addressable value selected by WithOccurrenceFunc.
+	// Use a nonzero-sized type to distinguish field addresses in the callback.
+	OccurrenceTarget = libyaml.OccurrenceTarget
+
 	// Kind represents the type of YAML node.
 	Kind = libyaml.Kind
 
