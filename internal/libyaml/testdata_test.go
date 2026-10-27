@@ -19,8 +19,8 @@ import (
 	"strings"
 	"testing"
 
-	"go.yaml.in/yaml/v4/internal/testutil/assert"
-	"go.yaml.in/yaml/v4/internal/testutil/datatest"
+	"github.com/kjanat/go-yaml/v4/internal/testutil/assert"
+	"github.com/kjanat/go-yaml/v4/internal/testutil/datatest"
 )
 
 // NodeSpec describes an input node for pipeline stage tests.

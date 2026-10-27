@@ -11,7 +11,7 @@ import (
 	"os"
 	"strconv"
 
-	"go.yaml.in/yaml/v4"
+	"github.com/kjanat/go-yaml/v4"
 )
 
 type Config struct {

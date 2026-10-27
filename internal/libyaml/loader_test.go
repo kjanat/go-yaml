@@ -8,7 +8,7 @@ import (
 	"io"
 	"testing"
 
-	"go.yaml.in/yaml/v4/internal/testutil/assert"
+	"github.com/kjanat/go-yaml/v4/internal/testutil/assert"
 )
 
 // TestStreamNodeEmptyStream tests that an empty stream returns a single StreamNode

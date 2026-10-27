@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"go.yaml.in/yaml/v4"
-	"go.yaml.in/yaml/v4/internal/libyaml"
+	"github.com/kjanat/go-yaml/v4"
+	"github.com/kjanat/go-yaml/v4/internal/libyaml"
 )
 
 var knownFailingTests = loadKnownFailingTests()

@@ -1,3 +1,3 @@
-module go.yaml.in/yaml/v4
+module github.com/kjanat/go-yaml/v4
 
 go 1.18

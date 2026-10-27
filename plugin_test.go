@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"go.yaml.in/yaml/v4"
-	"go.yaml.in/yaml/v4/plugin/limit"
+	"github.com/kjanat/go-yaml/v4"
+	"github.com/kjanat/go-yaml/v4/plugin/limit"
 )
 
 // generateAliases builds YAML with n aliases referencing a large anchor.

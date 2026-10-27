@@ -1,6 +1,6 @@
 package yaml
 
-import "go.yaml.in/yaml/v4/internal/libyaml"
+import "github.com/kjanat/go-yaml/v4/internal/libyaml"
 
 // -----------------------------------------------------------------------------
 // Node-related type aliases and constants

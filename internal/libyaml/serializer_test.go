@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"testing"
 
-	"go.yaml.in/yaml/v4/internal/testutil/assert"
+	"github.com/kjanat/go-yaml/v4/internal/testutil/assert"
 )
 
 // buildNodeFromSpec recursively builds a Node from a NodeSpec
